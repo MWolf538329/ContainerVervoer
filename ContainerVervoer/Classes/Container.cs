@@ -8,9 +8,9 @@ namespace ContainerVervoer.Classes
 {
     public class Container
     {
-        private const int _MAXCARRYWEIGHT = 120000; // Maximum Carry Weight 120 Ton
-        private const int _MAXWEIGHT = 30000; // Maximum Container Weight 30 Ton
-        private const int _MINWEIGHT = 4; // Minumum Container Weight 4 Ton
+        public const int _MAXCARRYWEIGHT = 120000; // Maximum Carry Weight 120 Ton
+        public const int _MAXWEIGHT = 30000; // Maximum Container Weight 30 Ton
+        public const int _MINWEIGHT = 4; // Minumum Container Weight 4 Ton
 
         public int ContainerWeight { get; private set; }
         public bool HasValuables {  get; private set; }
@@ -18,9 +18,41 @@ namespace ContainerVervoer.Classes
 
         public Container(int weight, bool hasValuables, bool hasCooling)
         {
-            ContainerWeight = weight;
-            HasValuables = hasValuables;
-            HasCooling = hasCooling;
+            try
+            {
+                if (AcceptableWeight(weight))
+                {
+                    ContainerWeight = weight;
+                }
+                else
+                {
+                    throw new Exception("Unacceptable Weight!");
+                }
+
+                HasValuables = hasValuables;
+                HasCooling = hasCooling;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Oopsy daisy");
+            }
+        }
+
+        public override string ToString()
+        {
+            return $"[{ContainerWeight} Ton - {HasValuables} - {HasCooling}]";
+        }
+
+        private bool AcceptableWeight(int weight)
+        {
+            bool result = false;
+
+            if (weight > _MINWEIGHT && weight < _MAXWEIGHT)
+            {
+                result = true;
+            }
+
+            return result;
         }
     }
 }
