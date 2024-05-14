@@ -18,24 +18,13 @@ namespace ContainerVervoer.Classes
 
         public Container(int weight, bool hasValuables, bool hasCooling)
         {
-            try
+            if (AcceptableWeight(weight))
             {
-                if (AcceptableWeight(weight))
-                {
-                    ContainerWeight = weight;
-                }
-                else
-                {
-                    throw new Exception("Unacceptable Weight!");
-                }
+                ContainerWeight = weight;
+            }
 
-                HasValuables = hasValuables;
-                HasCooling = hasCooling;
-            }
-            catch (Exception)
-            {
-                throw new Exception("Oopsy daisy");
-            }
+            HasValuables = hasValuables;
+            HasCooling = hasCooling;
         }
 
         public override string ToString()
@@ -47,7 +36,7 @@ namespace ContainerVervoer.Classes
         {
             bool result = false;
 
-            if (weight > _MINWEIGHT && weight < _MAXWEIGHT)
+            if (weight >= _MINWEIGHT && weight <= _MAXWEIGHT)
             {
                 result = true;
             }

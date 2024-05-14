@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             gb_Ship = new GroupBox();
+            txt_ShipLayout = new TextBox();
             btn_ClearShip = new Button();
             btn_InitializeShip = new Button();
             txt_ShipWidth = new TextBox();
@@ -47,13 +48,13 @@
             txt_Output = new TextBox();
             total = new Label();
             gb_Summary = new GroupBox();
+            btn_Execute = new Button();
             lbl_IsCooled = new Label();
             withcooling = new Label();
             lbl_WithValuables = new Label();
             withvaluables = new Label();
             lbl_TotalContainers = new Label();
             output = new Label();
-            btn_Execute = new Button();
             gb_Ship.SuspendLayout();
             gb_Container.SuspendLayout();
             gb_Summary.SuspendLayout();
@@ -61,6 +62,7 @@
             // 
             // gb_Ship
             // 
+            gb_Ship.Controls.Add(txt_ShipLayout);
             gb_Ship.Controls.Add(btn_ClearShip);
             gb_Ship.Controls.Add(btn_InitializeShip);
             gb_Ship.Controls.Add(txt_ShipWidth);
@@ -70,10 +72,21 @@
             gb_Ship.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
             gb_Ship.Location = new Point(12, 12);
             gb_Ship.Name = "gb_Ship";
-            gb_Ship.Size = new Size(245, 200);
+            gb_Ship.Size = new Size(370, 200);
             gb_Ship.TabIndex = 3;
             gb_Ship.TabStop = false;
             gb_Ship.Text = "Ship Creation";
+            // 
+            // txt_ShipLayout
+            // 
+            txt_ShipLayout.Font = new Font("Segoe UI", 6F);
+            txt_ShipLayout.Location = new Point(244, 28);
+            txt_ShipLayout.Multiline = true;
+            txt_ShipLayout.Name = "txt_ShipLayout";
+            txt_ShipLayout.ReadOnly = true;
+            txt_ShipLayout.ScrollBars = ScrollBars.Both;
+            txt_ShipLayout.Size = new Size(117, 164);
+            txt_ShipLayout.TabIndex = 7;
             // 
             // btn_ClearShip
             // 
@@ -144,7 +157,7 @@
             gb_Container.Controls.Add(hasValuables);
             gb_Container.Controls.Add(weight);
             gb_Container.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
-            gb_Container.Location = new Point(263, 12);
+            gb_Container.Location = new Point(388, 12);
             gb_Container.Name = "gb_Container";
             gb_Container.Size = new Size(474, 200);
             gb_Container.TabIndex = 4;
@@ -223,16 +236,16 @@
             weight.Font = new Font("Segoe UI", 10F);
             weight.Location = new Point(10, 53);
             weight.Name = "weight";
-            weight.Size = new Size(119, 23);
+            weight.Size = new Size(113, 23);
             weight.TabIndex = 1;
-            weight.Text = "Weight in Ton:";
+            weight.Text = "Weight in KG:";
             // 
             // txt_Output
             // 
             txt_Output.Location = new Point(12, 250);
             txt_Output.Multiline = true;
             txt_Output.Name = "txt_Output";
-            txt_Output.Size = new Size(929, 271);
+            txt_Output.Size = new Size(1054, 271);
             txt_Output.TabIndex = 5;
             // 
             // total
@@ -255,12 +268,23 @@
             gb_Summary.Controls.Add(lbl_TotalContainers);
             gb_Summary.Controls.Add(total);
             gb_Summary.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            gb_Summary.Location = new Point(743, 28);
+            gb_Summary.Location = new Point(868, 28);
             gb_Summary.Name = "gb_Summary";
             gb_Summary.Size = new Size(198, 184);
             gb_Summary.TabIndex = 7;
             gb_Summary.TabStop = false;
             gb_Summary.Text = "Summary";
+            // 
+            // btn_Execute
+            // 
+            btn_Execute.Font = new Font("Segoe UI", 12F);
+            btn_Execute.Location = new Point(6, 132);
+            btn_Execute.Name = "btn_Execute";
+            btn_Execute.Size = new Size(186, 46);
+            btn_Execute.TabIndex = 12;
+            btn_Execute.Text = "Execute";
+            btn_Execute.UseVisualStyleBackColor = true;
+            btn_Execute.Click += btn_Execute_Click;
             // 
             // lbl_IsCooled
             // 
@@ -322,21 +346,11 @@
             output.TabIndex = 8;
             output.Text = "Output:";
             // 
-            // btn_Execute
-            // 
-            btn_Execute.Font = new Font("Segoe UI", 12F);
-            btn_Execute.Location = new Point(6, 132);
-            btn_Execute.Name = "btn_Execute";
-            btn_Execute.Size = new Size(186, 46);
-            btn_Execute.TabIndex = 12;
-            btn_Execute.Text = "Execute";
-            btn_Execute.UseVisualStyleBackColor = true;
-            // 
             // ContainerVervoer
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(952, 532);
+            ClientSize = new Size(1077, 532);
             Controls.Add(output);
             Controls.Add(gb_Summary);
             Controls.Add(txt_Output);
@@ -364,7 +378,6 @@
         private GroupBox gb_Container;
         private ListBox lb_Containers;
         private Button btn_AddContainer;
-        private TextBox textBox3;
         private TextBox txt_ContainerWeight;
         private Label hasValuables;
         private Label weight;
@@ -382,5 +395,6 @@
         private CheckBox cb_IsCooled;
         private Button btn_ClearShip;
         private Button btn_Execute;
+        private TextBox txt_ShipLayout;
     }
 }
