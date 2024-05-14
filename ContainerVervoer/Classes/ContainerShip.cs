@@ -33,10 +33,10 @@ namespace ContainerVervoer.Classes
         {
             SortContainers();
 
-            if ()
-            {
+            //if ()
+            //{
 
-            }
+            //}
         }
 
         public override string ToString()
@@ -60,6 +60,6 @@ namespace ContainerVervoer.Classes
             containers = containers.OrderByDescending(c => c.HasCooling).ThenBy(c => c.HasValuables).ToList();
         }
 
-        private bool 
+        //private bool 
     }
 }

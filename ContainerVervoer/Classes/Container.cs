@@ -29,7 +29,7 @@ namespace ContainerVervoer.Classes
 
         public override string ToString()
         {
-            return $"[{ContainerWeight} Ton - {HasValuables} - {HasCooling}]";
+            return $"[{ContainerWeight} KG - {HasValuables} - {HasCooling}]";
         }
 
         private bool AcceptableWeight(int weight)
