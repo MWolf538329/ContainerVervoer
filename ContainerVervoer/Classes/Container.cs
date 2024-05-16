@@ -18,7 +18,7 @@ namespace ContainerVervoer.Classes
 
         public Container(int weight, bool hasValuables, bool hasCooling)
         {
-            if (AcceptableWeight(weight))
+            if (ContainerHasAcceptableWeight(weight))
             {
                 ContainerWeight = weight;
             }
@@ -32,7 +32,7 @@ namespace ContainerVervoer.Classes
             return $"[{ContainerWeight} KG - {HasValuables} - {HasCooling}]";
         }
 
-        private bool AcceptableWeight(int weight)
+        private bool ContainerHasAcceptableWeight(int weight)
         {
             bool result = false;
 
