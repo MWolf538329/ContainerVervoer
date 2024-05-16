@@ -1,47 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ContainerVervoer.Classes
+﻿namespace ContainerVervoer.Classes
 {
     public class Container
     {
-        public const int _MAXCARRYWEIGHT = 120000; // Maximum Carry Weight 120 Ton
-        public const int _MAXWEIGHT = 30000; // Maximum Container Weight 30 Ton
+        public const int _MAXCARRYWEIGHT = 120; // Maximum Carry Weight 120 Ton
+        public const int _MAXWEIGHT = 30; // Maximum Container Weight 30 Ton
         public const int _MINWEIGHT = 4; // Minumum Container Weight 4 Ton
 
-        public int ContainerWeight { get; private set; }
+        public int Weight { get; private set; }
         public bool HasValuables {  get; private set; }
         public bool HasCooling { get; private set; }
 
         public Container(int weight, bool hasValuables, bool hasCooling)
         {
-            if (ContainerHasAcceptableWeight(weight))
-            {
-                ContainerWeight = weight;
-            }
-
+            Weight = weight;
             HasValuables = hasValuables;
             HasCooling = hasCooling;
         }
 
-        public override string ToString()
+        public bool ContainerHasAcceptableWeight(int weight)
         {
-            return $"[{ContainerWeight} KG - {HasValuables} - {HasCooling}]";
-        }
-
-        private bool ContainerHasAcceptableWeight(int weight)
-        {
-            bool result = false;
-
-            if (weight >= _MINWEIGHT && weight <= _MAXWEIGHT)
-            {
-                result = true;
-            }
-
-            return result;
+            return weight >= _MINWEIGHT && weight <= _MAXWEIGHT;
         }
     }
 }

@@ -12,6 +12,7 @@ namespace ContainerVervoer
         {
             InitializeComponent();
             ClearUIFields();
+            FillContainerWeightComboBox();
             EnableDisableInput(true);
         }
 
@@ -31,13 +32,13 @@ namespace ContainerVervoer
             {
                 if (CheckIfContainerWeightInputValid())
                 {
-                    lb_Containers.Items.Add($"W: {txt_ContainerWeight.Text} - V: {cb_HasValuables.Checked} - C: {cb_IsCooled.Checked}");
+                    lb_Containers.Items.Add($"W: {cb_ContainerWeight.SelectedItem} - V: {cb_HasValuables.Checked} - C: {cb_IsCooled.Checked}");
 
-                    ship!.AddContainer(Convert.ToInt32(txt_ContainerWeight.Text), cb_HasValuables.Checked, cb_IsCooled.Checked);
+                    ship!.AddContainerToBay(Convert.ToInt32(cb_ContainerWeight.SelectedItem), cb_HasValuables.Checked, cb_IsCooled.Checked);
                     UpdateSummary();
                 }
 
-                txt_ContainerWeight.Text = string.Empty;
+                cb_ContainerWeight.SelectedItem = null;
                 cb_HasValuables.Checked = false;
                 cb_IsCooled.Checked = false;
             }
@@ -47,9 +48,9 @@ namespace ContainerVervoer
         {
             if (ship != null)
             {
-                if (ship!.Containers.Count() != 0)
+                if (ship!.ContainersOnBay.Count() != 0)
                 {
-                    ship!.DevideContainersOverShip();
+                    ship!.DivideContainersOverShip();
                 }
                 else
                 {
@@ -73,114 +74,46 @@ namespace ContainerVervoer
         #region Validation Functions
         private bool CheckIfShipLengthWidthInputValid()
         {
-            bool valid = true;
-
-            if (!ShipLengthInputValid())
-            {
-                valid = false;
-                MessageBox.Show("Invalid Length!");
-            }
-
-            if (!ShipWidthInputValid())
-            {
-                valid = false;
-                MessageBox.Show("Invalid Width!");
-            }
-            return valid;
+            return ShipLengthInputValid() && ShipWidthInputValid();
         }
 
         private bool ShipLengthInputValid()
         {
-            bool lengthValid = true;
-
-            if (txt_ShipLength.Text.Length == 0)
+            if (txt_ShipLength.Text.Length == 0 || !CharactersValid(txt_ShipLength.Text.ToArray())) 
             {
-                lengthValid = false;
+                MessageBox.Show("Invalid Length!");
+                return false;
             }
-            else
-            {
-                lengthValid = CharacterValid(txt_ShipLength.Text.ToArray());
-            }
-
-            return lengthValid;
+            return true;
         }
 
         private bool ShipWidthInputValid()
         {
-            bool widthValid = true;
-
-            if (txt_ShipWidth.Text.Length == 0)
+            if (txt_ShipWidth.Text.Length == 0 || !CharactersValid(txt_ShipWidth.Text.ToArray()))
             {
-                widthValid = false;
+                MessageBox.Show("Invalid Width!");
+                return false;
             }
-            else
-            {
-                widthValid = CharacterValid(txt_ShipWidth.Text.ToArray());
-            }
-
-            return widthValid;
+            return true;
         }
 
         private bool CheckIfContainerWeightInputValid()
         {
-            bool weightValid = true;
-
-            if (txt_ContainerWeight.Text.Length == 0)
-            {
-                weightValid = false;
-                MessageBox.Show("No Weight Value!");
-            }
-            else
-            {
-                if (ContainerWeightInputValid())
-                {
-                    if (Convert.ToInt32(txt_ContainerWeight.Text) < Classes.Container._MINWEIGHT)
-                    {
-                        weightValid = false;
-                        MessageBox.Show("Container does not meet the minumum weight!");
-                    }
-
-                    if (Convert.ToInt32(txt_ContainerWeight.Text) > Classes.Container._MAXWEIGHT)
-                    {
-                        weightValid = false;
-                        MessageBox.Show("Container exceeds the maximum weight limit!");
-                    }
-                }
-                else
-                {
-                    weightValid = false;
-                    MessageBox.Show("Invalid Container Weight!");
-                }
-            }
-            return weightValid;
+            return cb_ContainerWeight.SelectedItem != null && ContainerWeightInputValid();
         }
 
         private bool ContainerWeightInputValid()
         {
-            bool weightValid = true;
-
-            if (txt_ContainerWeight.Text.Length == 0)
-            {
-                weightValid = false;
-            }
-            else
-            {
-                weightValid = CharacterValid(txt_ContainerWeight.Text.ToArray());
-            }
-
-            return weightValid;
+            return CharactersValid(cb_ContainerWeight.SelectedItem!.ToString()!.ToArray());
         }
 
-        private bool CharacterValid(char[] characters)
+        private bool CharactersValid(char[] characters)
         {
             bool valid = true;
 
             foreach (char c in characters)
             {
-                if (!Regex.IsMatch(c.ToString(), _VALIDCHARACTERS))
-                {
-                    valid = false;
-                }
+                if (!Regex.IsMatch(c.ToString(), _VALIDCHARACTERS)) valid = false;
             }
             return valid;
         }
@@ -196,8 +129,8 @@ namespace ContainerVervoer
             {
                 if (determineNewLine == ship.WidthInContainers)
                 {
-                    determineNewLine = 0;
                     txt_ShipLayout.Text += Environment.NewLine;
+                    determineNewLine = 0;
                 }
 
                 txt_ShipLayout.Text += "[ ]";
@@ -207,11 +140,19 @@ namespace ContainerVervoer
             txt_ShipLayout.Text += Environment.NewLine + "_____";
         }
 
+        private void FillContainerWeightComboBox()
+        {
+            for (int weight = Classes.Container._MINWEIGHT; weight <= Classes.Container._MAXWEIGHT; weight++)
+            {
+                cb_ContainerWeight.Items.Add(weight);
+            }
+        }
+
         private void UpdateSummary()
         {
-            lbl_TotalContainers.Text = ship!.Containers.Count().ToString();
-            lbl_WithValuables.Text = ship!.Containers.Where(c => c.HasValuables).Count().ToString();
-            lbl_IsCooled.Text = ship!.Containers.Where(c => c.HasCooling).Count().ToString();
+            lbl_TotalContainers.Text = ship!.ContainersOnBay.Count().ToString();
+            lbl_WithValuables.Text = ship!.ContainersOnBay.Where(c => c.HasValuables).Count().ToString();
+            lbl_IsCooled.Text = ship!.ContainersOnBay.Where(c => c.HasCooling).Count().ToString();
         }
 
         private void ClearUIFields()
@@ -219,7 +160,8 @@ namespace ContainerVervoer
             txt_ShipLength.Text = string.Empty;
             txt_ShipWidth.Text = string.Empty;
             txt_ShipLayout.Text = string.Empty;
-            txt_ContainerWeight.Text = string.Empty;
+            cb_ContainerWeight.Text = string.Empty;
+            cb_ContainerWeight.SelectedItem = null;
             cb_HasValuables.Checked = false;
             cb_IsCooled.Checked = false;
             lb_Containers.Items.Clear();
@@ -243,7 +185,7 @@ namespace ContainerVervoer
 
         private void EnableDisableContainerInput(bool enable)
         {
-            txt_ContainerWeight.Enabled = enable;
+            cb_ContainerWeight.Enabled = enable;
             cb_HasValuables.Enabled = enable;
             cb_IsCooled.Enabled = enable;
             btn_AddContainer.Enabled = enable;
