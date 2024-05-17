@@ -149,7 +149,8 @@
             // 2nd: Normal - Weight: High -> Low
             // 3th: HasValuables - Weight: High -> Low
 
-            containersOnBay = containersOnBay.OrderByDescending(c => c.HasCooling).ThenBy(c => c.HasValuables).ToList();
+            containersOnBay = containersOnBay.OrderByDescending(c => c.HasCooling)
+                .ThenBy(c => c.HasValuables).ToList();
         }
     }
 }

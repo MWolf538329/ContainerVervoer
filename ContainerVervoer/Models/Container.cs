@@ -16,10 +16,5 @@
             HasValuables = hasValuables;
             HasCooling = hasCooling;
         }
-
-        public bool ContainerHasAcceptableWeight(int weight)
-        {
-            return weight >= _MINWEIGHT && weight <= _MAXWEIGHT;
-        }
     }
 }
