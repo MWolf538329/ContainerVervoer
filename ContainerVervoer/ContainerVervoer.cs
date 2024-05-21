@@ -33,9 +33,15 @@ namespace ContainerVervoer
                 if (CheckIfContainerWeightInputValid())
                 {
                     lb_Containers.Items.Add($"W: {cb_ContainerWeight.SelectedItem} - V: {cb_HasValuables.Checked} - C: {cb_IsCooled.Checked}");
+                    try
+                    {
+                        ship!.AddContainerToBay(Convert.ToInt32(cb_ContainerWeight.SelectedItem), cb_HasValuables.Checked, cb_IsCooled.Checked);
+                    }
+                    catch(Exception ex)
+                    {
 
-                    ship!.AddContainerToBay(Convert.ToInt32(cb_ContainerWeight.SelectedItem), cb_HasValuables.Checked, cb_IsCooled.Checked);
-                    UpdateSummary();
+                    }
+                        UpdateSummary();
                 }
 
                 cb_ContainerWeight.SelectedItem = null;
@@ -142,7 +148,7 @@ namespace ContainerVervoer
 
         private void FillContainerWeightComboBox()
         {
-            for (int weight = Classes.Container._MINWEIGHT; weight <= Classes.Container._MAXWEIGHT; weight++)
+            for (int weight = Classes.Container._MINWEIGHTINTON; weight <= Classes.Container._MAXWEIGHTINTON; weight++)
             {
                 cb_ContainerWeight.Items.Add(weight);
             }

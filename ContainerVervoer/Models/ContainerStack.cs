@@ -2,7 +2,8 @@
 {
     public class ContainerStack
     {
-        public const int _MAXSTACKWEIGHT = 150; // Maximum Stack Weight 150 Ton
+        public const int _MAXSTACKWEIGHTINTON = 150;
+
         public int StackWeight { get; private set; }
         public IEnumerable<Container> Containers { get { return containers; } }
         private List<Container> containers { get; set; }
@@ -24,12 +25,12 @@
 
         private bool DoesNotExceedStackWeightLimit(Container container)
         {
-            return (DetermineStackWeight(containers) + container.Weight) <= ContainerStack._MAXSTACKWEIGHT;
+            return (DetermineStackWeight(containers) + container.Weight) <= ContainerStack._MAXSTACKWEIGHTINTON;
         }
 
         private bool DoesNotExceedCarryWeightLimit(Container container)
         {
-            return (DetermineStackWeight(Containers.Skip(1).ToList()) + container.Weight) <= Container._MAXCARRYWEIGHT;
+            return (DetermineStackWeight(Containers.Skip(1).ToList()) + container.Weight) <= Container._MAXCARRYWEIGHTINTON;
         }
 
         private int DetermineStackWeight(List<Container> containers)
