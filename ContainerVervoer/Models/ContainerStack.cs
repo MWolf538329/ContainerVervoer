@@ -15,22 +15,24 @@
 
         public bool TryAddingContainerToStack(Container container)
         {
-            if (DoesNotExceedStackWeightLimit(container) && DoesNotExceedCarryWeightLimit(container))
+            if (containers.Count != 0)
+            {
+                if (DoesNotExceedStackWeightLimit(container) && DoesNotExceedCarryWeightLimit(container))
+                {
+                    if (!NotOnTopOfValuableContainer(container))
+                    {
+                        containers.Add(container);
+                        return true;
+                    }
+                }
+            }
+            else
             {
                 containers.Add(container);
                 return true;
             }
+            
             return false;
-        }
-
-        private bool DoesNotExceedStackWeightLimit(Container container)
-        {
-            return (DetermineStackWeight(containers) + container.Weight) <= ContainerStack._MAXSTACKWEIGHTINTON;
-        }
-
-        private bool DoesNotExceedCarryWeightLimit(Container container)
-        {
-            return (DetermineStackWeight(Containers.Skip(1).ToList()) + container.Weight) <= Container._MAXCARRYWEIGHTINTON;
         }
 
         private int DetermineStackWeight(List<Container> containers)
@@ -44,5 +46,22 @@
 
             return weight;
         }
+
+        #region Checks
+        private bool DoesNotExceedStackWeightLimit(Container container)
+        {
+            return (DetermineStackWeight(containers) + container.Weight) <= ContainerStack._MAXSTACKWEIGHTINTON;
+        }
+
+        private bool DoesNotExceedCarryWeightLimit(Container container)
+        {
+            return (DetermineStackWeight(containers.Skip(1).ToList()) + container.Weight) <= Container._MAXCARRYWEIGHTINTON;
+        }
+
+        private bool NotOnTopOfValuableContainer(Container container)
+        {
+            return containers.LastOrDefault()!.HasValuables;
+        }
+        #endregion
     }
 }

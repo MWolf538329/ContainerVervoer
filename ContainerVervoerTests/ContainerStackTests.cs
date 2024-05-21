@@ -8,12 +8,10 @@ namespace ContainerVervoerTests
         private Container lightContainer { get; } = new Container(5, false, false);
         private Container defaultContainer { get; } = new Container(30, false, false); 
         private Container container { get; } = new Container(25, false, false);
-
         private Container valuableContainer { get; } = new Container(20, true, false);
 
-
         [TestMethod]
-        public void TryAddingContainerToStackSucces()
+        public void TryAddingContainerToStack_Succes()
         {
             // Arrange
             ContainerStack stack = new();
@@ -29,7 +27,7 @@ namespace ContainerVervoerTests
         }
 
         [TestMethod]
-        public void TryAddingContainerToStackExceedStackWeight()
+        public void TryAddingContainerToStack_ExceedStackWeight()
         {
             // Arrange
             ContainerStack stack = new();
@@ -48,7 +46,7 @@ namespace ContainerVervoerTests
         }
 
         [TestMethod]
-        public void TryAddingContainerToStackExceedCarryWeight()
+        public void TryAddingContainerToStack_ExceedCarryWeight()
         {
             // Arrange
             ContainerStack stack = new();
@@ -66,7 +64,8 @@ namespace ContainerVervoerTests
             Assert.AreEqual(5, stack.Containers.Count());
         }
 
-        public void TryAddingContainerToStackNormalContainerOnTopOfValuableContainer()
+        [TestMethod]
+        public void TryAddingContainerToStack_NormalContainerOnTopOfValuableContainer()
         {
             // Arrange
             ContainerStack stack = new();
