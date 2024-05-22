@@ -5,6 +5,7 @@
         public int LengthInContainers { get; private set; }
         public int WidthInContainers { get; private set; }
         public static int MaxShipWeight { get; private set; }
+        public int CurrentShipWeight { get; private set; }
         public IEnumerable<ContainerStack> ContainerSpots { get { return containerSpots; } }
         private List<ContainerStack> containerSpots { get; set; } = new();
         public IEnumerable<Container> ContainersOnBay { get { return containersOnBay; } }
@@ -14,7 +15,7 @@
         {
             LengthInContainers = length;
             WidthInContainers = width;
-            CreateContainerSpots(LengthInContainers, WidthInContainers);
+            CreateContainerSpots();
             MaxShipWeight = containerSpots.Count * 150;
         }
 
@@ -44,97 +45,22 @@
                 {
                     foreach (ContainerStack cooledSpot in containerSpots.Take(WidthInContainers))
                     {
-
-
-
-                        // Second Draft:
-                        //            while (!containerAdded)
-                        //            {
-                        //                if (currentCooledSpot != 0)
-                        //                {
-                        //                    if (currentCooledSpot != lastCooledSpot)
-                        //                    {
-                        //                        containerAdded = containerSpots[currentCooledSpot].TryAddingContainerToStack(container);
-                        //                        continue;
-                        //                    }
-                        //                }
-                        //                else
-                        //                {
-                        //                    containerAdded = containerSpots[currentCooledSpot].TryAddingContainerToStack(container);
-                        //                    continue;
-                        //                }
-                        //            }
-                        //            lastCooledSpot = currentCooledSpot;
-                        //            currentCooledSpot++;
-                        //        }
-                        //    }
-                        //    else if (!container.HasCooling && !container.HasValuables)
-                        //    {
-
-
-                        //        currentNormalSpot++;
-                        //    }
-                        //    else
-                        //    {
-
-
-                        //        currentNormalSpot++;
-                        //    }
-                        //}
-                        // --------------
-
-
-                        // First Draft:
-                        //foreach (Container container in containersOnBay)
-                        //{
-                        //    if (container.HasCooling)
-                        //    {
-                        //        for (int frontSpots = 0; frontSpots < WidthInContainers; frontSpots++)
-                        //        {
-                        //            containerSpots[frontSpots].TryAddingContainerToStack(container);
-                        //            frontSpots++;
-
-                        //            if (frontSpots > WidthInContainers)
-                        //            {
-                        //                frontSpots = 0;
-                        //            }
-                        //        }
-                        //    }
-                        //    else if (!container.HasCooling && !container.HasValuables)
-                        //    {
-                        //        for(int restSpots = WidthInContainers; restSpots < containerSpots.Count; restSpots++)
-                        //        {
-                        //            containerSpots[restSpots].TryAddingContainerToStack(container);
-                        //            restSpots++;
-
-                        //            if (restSpots > containerSpots.Count)
-                        //            {
-                        //                restSpots = WidthInContainers;
-                        //            }
-                        //        }
-                        //    }
-                        //    else if (container.HasValuables)
-                        //    {
-                        //        for (int restSpots = WidthInContainers; restSpots < containerSpots.Count; restSpots++)
-                        //        {
-                        //            containerSpots[restSpots].TryAddingContainerToStack(container);
-                        //            restSpots++;
-
-                        //            if (restSpots > containerSpots.Count)
-                        //            {
-                        //                restSpots = WidthInContainers;
-                        //            }
-                        // --------------
+                        containerAdded = cooledSpot.TryAddingContainerToStack(container);
+                        continue;
                     }
+
+                    if (!containerAdded) 
+                        throw new ArgumentException("Container could not be added to any of the cooled spots!"); 
+                    else continue;
                 }
             }
         }
 
-        private void CreateContainerSpots(int length, int width)
+        private void CreateContainerSpots()
         {
-            for (int c = 0; c < length; c++)
+            for (int c = 0; c < LengthInContainers; c++)
             {
-                for(int r = 0; r < width; r++)
+                for(int r = 0; r < WidthInContainers; r++)
                 {
                     containerSpots.Add(new ContainerStack());
                 }
@@ -152,5 +78,49 @@
             containersOnBay = containersOnBay.OrderByDescending(c => c.HasCooling)
                 .ThenBy(c => c.HasValuables).ToList();
         }
+
+        #region Checks
+        private bool IsContainerSurrounded(ContainerStack currentStack, ContainerStack surroundingStack)
+        {
+            return currentStack.Containers.Count() + 1 >= surroundingStack.Containers.Count();
+        }
+
+        private bool IsSurroundingContainerValuable(ContainerStack surroundingStack)
+        {
+            return surroundingStack.Containers.Last().HasValuables;
+        }
+
+        private void CheckShipWeightForSafety()
+        {
+            IsHalfOfShipWeightUsed();
+
+            int weightLeftSide = CalculateWeightOnSide(0);
+            int weightRightSide = CalculateWeightOnSide(WidthInContainers - 1);
+            bool safeMargin = CalculateMarginOfSides(weightLeftSide, weightRightSide);
+        }
+
+        private bool IsHalfOfShipWeightUsed()
+        {
+            return CurrentShipWeight >= MaxShipWeight / 2;
+        }
+
+        private int CalculateWeightOnSide(int index)
+        {
+            int totalWeight = 0;
+
+            for (int i = 0; i < containerSpots.Count() / WidthInContainers; i++)
+            {
+                totalWeight += containerSpots[index].StackWeight;
+                index += WidthInContainers;
+            }
+
+            return totalWeight;
+        }
+
+        public static bool CalculateMarginOfSides(int weightLeftSide, int weightRightSide)
+        {
+            return weightLeftSide >= weightRightSide * 0.8 && weightRightSide >= weightLeftSide * 0.8;
+        }
+        #endregion
     }
 }

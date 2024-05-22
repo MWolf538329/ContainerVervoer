@@ -14,16 +14,21 @@ namespace ContainerVervoerTests
         public void TryAddingContainerToStack_Succes()
         {
             // Arrange
-            ContainerStack stack = new();
-            stack.TryAddingContainerToStack(defaultContainer);
-            stack.TryAddingContainerToStack(defaultContainer);
+            ContainerStack normalStack = new();
+            normalStack.TryAddingContainerToStack(defaultContainer);
+            normalStack.TryAddingContainerToStack(defaultContainer);
+
+            ContainerStack cooledStack = new();
+            //cooledStack.TryAddingContainerToStack();
+
+            ContainerStack valuableStack = new();
 
             // Act
-            bool succes = stack.TryAddingContainerToStack(container);
+            bool succes = normalStack.TryAddingContainerToStack(container);
 
             // Assert
             Assert.AreEqual(true, succes);
-            Assert.AreEqual(3, stack.Containers.Count());
+            Assert.AreEqual(3, normalStack.Containers.Count());
         }
 
         [TestMethod]
