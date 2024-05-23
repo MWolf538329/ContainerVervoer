@@ -4,7 +4,7 @@
     {
         public int LengthInContainers { get; private set; }
         public int WidthInContainers { get; private set; }
-        public static int MaxShipWeight { get; private set; }
+        public int MaxShipWeight { get; private set; }
         public int CurrentShipWeight { get; private set; }
         public IEnumerable<ContainerStack> ContainerSpots { get { return containerSpots; } }
         private List<ContainerStack> containerSpots { get; set; } = new();
@@ -94,8 +94,8 @@
         {
             IsHalfOfShipWeightUsed();
 
-            int weightLeftSide = CalculateWeightOnSide(0);
-            int weightRightSide = CalculateWeightOnSide(WidthInContainers - 1);
+            int weightLeftSide = CalculateWeightOnSide(this, 0);
+            int weightRightSide = CalculateWeightOnSide(this, WidthInContainers - 1);
             bool safeMargin = CalculateMarginOfSides(weightLeftSide, weightRightSide);
         }
 
@@ -104,14 +104,14 @@
             return CurrentShipWeight >= MaxShipWeight / 2;
         }
 
-        private int CalculateWeightOnSide(int index)
+        public static int CalculateWeightOnSide(ContainerShip ship, int index)
         {
             int totalWeight = 0;
 
-            for (int i = 0; i < containerSpots.Count() / WidthInContainers; i++)
+            for (int i = 0; i < ship.containerSpots.Count() / ship.WidthInContainers; i++)
             {
-                totalWeight += containerSpots[index].StackWeight;
-                index += WidthInContainers;
+                totalWeight += ship.containerSpots[index].StackWeight;
+                index += ship.WidthInContainers;
             }
 
             return totalWeight;
