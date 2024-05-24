@@ -29,8 +29,9 @@
             int currentCooledSpot = 0;
             int lastCooledSpot = 0;
             int currentNormalSpot = WidthInContainers;
-            
-            
+            int lastNormalSpot = WidthInContainers;
+
+
             SortContainers();
 
             foreach (Container container in containersOnBay)
@@ -41,16 +42,88 @@
                 if (currentCooledSpot == WidthInContainers) currentCooledSpot = 0;
                 if (currentNormalSpot == containerSpots.Count()) currentNormalSpot = WidthInContainers;
 
-                if (container.HasCooling)
+                if (container.HasCooling && !container.HasValuables)
                 {
-                    foreach (ContainerStack cooledSpot in containerSpots.Take(WidthInContainers))
+                    while (!containerAdded)
                     {
-                        containerAdded = cooledSpot.TryAddingContainerToStack(container);
-                        continue;
+                        containerAdded = containerSpots[currentCooledSpot].TryAddingContainerToStack(container);
+
+                        lastCooledSpot = currentCooledSpot;
+                        currentCooledSpot++;
+
+                        if (containerAdded) continue;
                     }
 
-                    if (!containerAdded) 
-                        throw new ArgumentException("Container could not be added to any of the cooled spots!"); 
+                    if (!containerAdded)
+                        throw new ArgumentException("Container could not be added to any of the cooled spots!");
+                    else continue;
+                }
+                else if (container.HasValuables && !container.HasCooling)
+                {
+                    while (!containerAdded)
+                    {
+                        if (IsContainerSurrounded(containerSpots[currentNormalSpot], containerSpots[currentNormalSpot - WidthInContainers]))
+                        {
+                            if (!IsSurroundingContainerValuable(containerSpots[currentNormalSpot - WidthInContainers]) && container.HasValuables)
+                            {
+                                containerAdded = containerSpots[currentNormalSpot].TryAddingContainerToStack(container);
+                            }
+                        }
+
+                        //if (!IsContainerSurrounded(containerSpots[currentNormalSpot], containerSpots[currentNormalSpot - WidthInContainers])
+                        //    && !IsSurroundingContainerValuable(containerSpots[currentNormalSpot - WidthInContainers]))
+                        //{
+                        //    containerAdded = containerSpots[currentNormalSpot].TryAddingContainerToStack(container);
+                        //}
+
+                        lastNormalSpot = currentNormalSpot;
+                        currentNormalSpot++;
+
+                        if (containerAdded) continue;
+                    }
+
+                    if (!containerAdded)
+                        throw new ArgumentException("Container could not be added to any of the normal spots!");
+                    else continue;
+                }
+                else if (container.HasCooling && container.HasValuables)
+                {
+                    while (!containerAdded)
+                    {
+                        containerAdded = containerSpots[currentCooledSpot].TryAddingContainerToStack(container);
+                    }
+
+                    lastCooledSpot = currentCooledSpot;
+                    currentCooledSpot++;
+
+                    if (containerAdded) continue;
+
+                    if (!containerAdded)
+                        throw new ArgumentException("Container could not be added to any of the normal spots!");
+                    else continue;
+                }
+                else
+                {
+                    while (!containerAdded)
+                    {
+                        if (containerSpots[currentNormalSpot].Containers.Count() + 1 == containerSpots[currentNormalSpot - WidthInContainers].Containers.Count())
+                        {
+                            if (!IsSurroundingContainerValuable(containerSpots[currentNormalSpot - WidthInContainers]))
+                            {
+                                containerAdded = containerSpots[currentNormalSpot].TryAddingContainerToStack(container);
+                            }
+
+                            containerAdded = containerSpots[currentNormalSpot].TryAddingContainerToStack(container);
+                        }
+
+                        lastNormalSpot = currentNormalSpot;
+                        currentNormalSpot++;
+
+                        if (containerAdded) continue;
+                    }
+
+                    if (!containerAdded)
+                        throw new ArgumentException("Container could not be added to any of the normal spots!");
                     else continue;
                 }
             }
@@ -82,12 +155,18 @@
         #region Checks
         private bool IsContainerSurrounded(ContainerStack currentStack, ContainerStack surroundingStack)
         {
-            return currentStack.Containers.Count() + 1 >= surroundingStack.Containers.Count();
+            bool asd = currentStack.Containers.Count() + 1 >= surroundingStack.Containers.Count();
+
+            return asd;
         }
 
         private bool IsSurroundingContainerValuable(ContainerStack surroundingStack)
         {
-            return surroundingStack.Containers.Last().HasValuables;
+            if (surroundingStack.Containers.Count() != 0)
+            {
+                return surroundingStack.Containers.Last().HasValuables;
+            }
+            return false;
         }
 
         private void CheckShipWeightForSafety()

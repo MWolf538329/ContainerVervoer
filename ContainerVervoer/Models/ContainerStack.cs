@@ -22,6 +22,7 @@
                     if (!NotOnTopOfValuableContainer(container))
                     {
                         containers.Add(container);
+                        StackWeight = DetermineStackWeight(containers);
                         return true;
                     }
                 }
@@ -29,6 +30,7 @@
             else
             {
                 containers.Add(container);
+                StackWeight = DetermineStackWeight(containers);
                 return true;
             }
             
