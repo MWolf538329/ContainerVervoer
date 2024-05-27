@@ -15,5 +15,15 @@ namespace ContainerVervoer.Models
                 containerStacks.Add(new ContainerStack());
             }
         }
+
+        public void TryToAddContainerToContainerStackRow(Container container)
+        {
+            bool containerAdded = false;
+
+            foreach (ContainerStack stack in containerStacks)
+            {
+                if (!containerAdded) containerAdded = stack.TryAddingContainerToStack(container); else continue;
+            }
+        }
     }
 }

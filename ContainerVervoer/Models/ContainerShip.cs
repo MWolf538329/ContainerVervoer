@@ -25,6 +25,19 @@ namespace ContainerVervoer.Classes
             containersOnBay.Add(new Container(weight, hasValuable, isCooled));
         }
 
+        public void DivideContainersOverShip()
+        {
+            containersOnBay = SortContainers(containersOnBay);
+
+            foreach (Container container in containersOnBay)
+            {
+                if (container.HasCooling)
+                {
+                    containerStackRows[0].TryToAddContainerToContainerStackRow(container);
+                }
+            }
+        }
+
         //public void DivideContainersOverShip()
         //{
         //    int currentCooledSpot = 0;
