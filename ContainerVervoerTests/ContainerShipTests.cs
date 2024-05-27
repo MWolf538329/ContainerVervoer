@@ -5,6 +5,10 @@ namespace ContainerVervoerTests
     [TestClass]
     public class ContainerShipTests
     {
+
+
+
+
         [TestMethod]
         public void SortContainers()
         {
@@ -166,6 +170,28 @@ namespace ContainerVervoerTests
         }
 
         [TestMethod]
+        public void CalculateWeightOnSide_2By2()
+        {
+            // Arrange
+            ContainerShip ship = new(2, 2);
+            ship.AddContainerToBay(30, false, true); // Left Cooled
+            ship.AddContainerToBay(29, false, true); // Right Cooled
+            ship.AddContainerToBay(28, false, true); // Left Cooled
+            ship.AddContainerToBay(27, false, false); // Left
+            ship.AddContainerToBay(26, false, false); // Right
+            ship.AddContainerToBay(25, false, false); // Left
+            ship.DivideContainersOverShip();
+
+            // Act
+            int leftWeight = ContainerShip.CalculateWeightOfSide(ship, 0);
+            int rightWeight = ContainerShip.CalculateWeightOfSide(ship, ship.WidthInContainers - 1);
+
+            // Assert
+            Assert.AreEqual(110, leftWeight);
+            Assert.AreEqual(55, rightWeight);
+        }
+
+        [TestMethod]
         public void CalculateWeightOnSide_temptest()
         {
             // Arrange
@@ -177,8 +203,8 @@ namespace ContainerVervoerTests
             ship.DivideContainersOverShip();
 
             // Act
-            int leftWeight = ContainerShip.CalculateWeightOnSide(ship, 0);
-            int rightWeight = ContainerShip.CalculateWeightOnSide(ship, ship.WidthInContainers - 1);
+            int leftWeight = ContainerShip.CalculateWeightOfSide(ship, 0);
+            int rightWeight = ContainerShip.CalculateWeightOfSide(ship, ship.WidthInContainers - 1);
 
             // Assert
             Assert.AreEqual(58, leftWeight);
@@ -223,8 +249,8 @@ namespace ContainerVervoerTests
             ship.DivideContainersOverShip();
 
             // Act
-            int weightLeftSide = ContainerShip.CalculateWeightOnSide(ship, 0);
-            int weightRightSide = ContainerShip.CalculateWeightOnSide(ship, ship.WidthInContainers - 1);
+            int weightLeftSide = ContainerShip.CalculateWeightOfSide(ship, 0);
+            int weightRightSide = ContainerShip.CalculateWeightOfSide(ship, ship.WidthInContainers - 1);
 
             // Assert
             Assert.AreEqual(600, ship.MaxShipWeight);
@@ -247,8 +273,8 @@ namespace ContainerVervoerTests
         //    ship.DivideContainersOverShip();
 
         //    // Act
-        //    int weightLeftSide = ContainerShip.CalculateWeightOnSide(ship, 0);
-        //    int weightRightSide = ContainerShip.CalculateWeightOnSide(ship, ship.WidthInContainers - 1);
+        //    int weightLeftSide = ContainerShip.CalculateWeightOfSide(ship, 0);
+        //    int weightRightSide = ContainerShip.CalculateWeightOfSide(ship, ship.WidthInContainers - 1);
 
         //    // Assert
         //    Assert.AreEqual(600, ship.MaxShipWeight);
@@ -261,11 +287,12 @@ namespace ContainerVervoerTests
         {
             // Arrange
             bool lightLeftHeavyRight, leftRightEven, heavyLeftLightRight;
+            ContainerShip ship = new(2, 2);
 
             // Act
-            lightLeftHeavyRight = ContainerShip.CalculateMarginOfSides(80, 100);
-            leftRightEven = ContainerShip.CalculateMarginOfSides(100, 100);
-            heavyLeftLightRight = ContainerShip.CalculateMarginOfSides(100, 80);
+            lightLeftHeavyRight = ship.CalculateMarginOfSides(80, 100);
+            leftRightEven = ship.CalculateMarginOfSides(100, 100);
+            heavyLeftLightRight = ship.CalculateMarginOfSides(100, 80);
 
             // Assert
             Assert.AreEqual(true, lightLeftHeavyRight);
@@ -278,11 +305,12 @@ namespace ContainerVervoerTests
         {
             // Arrange
             bool biggerMargin, barelyValid, minusNumberUsed;
+            ContainerShip ship = new(2, 2);
 
             // Act
-            biggerMargin = ContainerShip.CalculateMarginOfSides(60, 120);
-            barelyValid = ContainerShip.CalculateMarginOfSides(79, 100);
-            minusNumberUsed = ContainerShip.CalculateMarginOfSides(-1, 100);
+            biggerMargin = ship.CalculateMarginOfSides(60, 120);
+            barelyValid = ship.CalculateMarginOfSides(79, 100);
+            minusNumberUsed = ship.CalculateMarginOfSides(-1, 100);
 
             // Assert
             Assert.AreEqual(false, biggerMargin);
