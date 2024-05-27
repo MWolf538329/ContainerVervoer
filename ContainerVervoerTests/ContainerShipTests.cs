@@ -6,6 +6,47 @@ namespace ContainerVervoerTests
     public class ContainerShipTests
     {
         [TestMethod]
+        public void SortContainers()
+        {
+            // Arrange
+            List<Container> containers = new List<Container>()
+            {
+                new Container(22, false, false),
+                new Container(23, true, false),
+                new Container(16, false, true),
+                new Container(24, true, true),
+                new Container(30, false, false)
+            };
+
+            // Act
+            containers = ContainerShip.SortContainers(containers);
+            // Expected:
+            // (16, false, true) -> (24, true, true) -> (22, false, false) -> (30, false, false) -> (23, true, false)
+
+            // Assert
+            Assert.AreEqual(16, containers.ElementAt(0).Weight);
+            Assert.AreEqual(false, containers.ElementAt(0).HasValuables);
+            Assert.AreEqual(true, containers.ElementAt(0).HasCooling);
+
+            Assert.AreEqual(24, containers.ElementAt(1).Weight);
+            Assert.AreEqual(true, containers.ElementAt(1).HasValuables);
+            Assert.AreEqual(true, containers.ElementAt(1).HasCooling);
+
+            Assert.AreEqual(22, containers.ElementAt(2).Weight);
+            Assert.AreEqual(false, containers.ElementAt(2).HasValuables);
+            Assert.AreEqual(false, containers.ElementAt(2).HasCooling);
+
+            Assert.AreEqual(30, containers.ElementAt(3).Weight);
+            Assert.AreEqual(false, containers.ElementAt(3).HasValuables);
+            Assert.AreEqual(false, containers.ElementAt(3).HasCooling);
+
+            Assert.AreEqual(23, containers.ElementAt(4).Weight);
+            Assert.AreEqual(true, containers.ElementAt(4).HasValuables);
+            Assert.AreEqual(false, containers.ElementAt(4).HasCooling);
+        }
+
+
+        [TestMethod]
         public void DivideContainersOverShip_CooledContainers()
         {
             // Arrange

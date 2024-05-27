@@ -31,8 +31,7 @@
             int currentNormalSpot = WidthInContainers;
             int lastNormalSpot = WidthInContainers;
 
-
-            SortContainers();
+            containersOnBay = SortContainers(containersOnBay);
 
             foreach (Container container in containersOnBay)
             {
@@ -140,16 +139,10 @@
             }
         }
 
-        private void SortContainers()
+        public static List<Container> SortContainers(List<Container> containersOnBay)
         {
-            // TO DO:
-            // ORDER containers:
-            // 1st: HasCooling - Weight: High -> Low
-            // 2nd: Normal - Weight: High -> Low
-            // 3th: HasValuables - Weight: High -> Low
-
-            containersOnBay = containersOnBay.OrderByDescending(c => c.HasCooling)
-                .ThenBy(c => c.HasValuables).ToList();
+            return containersOnBay.OrderByDescending(c => c.HasCooling)
+                .ThenBy(c => c.HasValuables).ThenBy(c => c.Weight).ToList();
         }
 
         #region Checks
