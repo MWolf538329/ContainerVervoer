@@ -1,4 +1,4 @@
-using ContainerVervoer.Classes;
+using ContainerVervoer.Models;
 using System.Text.RegularExpressions;
 
 namespace ContainerVervoer
@@ -21,7 +21,7 @@ namespace ContainerVervoer
             if (CheckIfShipLengthWidthInputValid())
             {
                 ship = new ContainerShip(Convert.ToInt32(txt_ShipLength.Text), Convert.ToInt32(txt_ShipWidth.Text));
-                DrawShip();
+                //DrawShip();
                 EnableDisableInput(false);
             }
         }
@@ -57,6 +57,8 @@ namespace ContainerVervoer
                 if (ship!.ContainersOnBay.Count() != 0)
                 {
                     ship!.DivideContainersOverShip();
+
+                    txt_Output.Text = CreateThreeDVisualizationURL();
                 }
                 else
                 {
@@ -126,29 +128,79 @@ namespace ContainerVervoer
         #endregion
 
         #region UI Functions
-        private void DrawShip()
-        {
-            txt_ShipLayout.Text += "  ^  " + Environment.NewLine + @" /  \" + Environment.NewLine;
-            int determineNewLine = 0;
+        //private void DrawShip()
+        //{
+        //    txt_ShipLayout.Text += "  ^  " + Environment.NewLine + @" /  \" + Environment.NewLine;
+        //    int determineNewLine = 0;
 
-            for (int spot = 0; spot < ship!.ContainerSpots.Count(); spot++)
+        //    for (int spot = 0; spot < ship!.ContainerSpots.Count(); spot++)
+        //    {
+        //        if (determineNewLine == ship.WidthInContainers)
+        //        {
+        //            txt_ShipLayout.Text += Environment.NewLine;
+        //            determineNewLine = 0;
+        //        }
+
+        //        txt_ShipLayout.Text += "[ ]";
+        //        determineNewLine++;
+        //    }
+
+        //    txt_ShipLayout.Text += Environment.NewLine + "_____";
+        //}
+
+        private string CreateThreeDVisualizationURL()
+        {
+            // stacks=111,111,111/111,111,111/111,111,111&weights=1-1-1,1-1-1,1-1-1/1-1-1,1-1-1,1-1-1/1-1-1,1-1-1,1-1-1
+            string stacks = "";
+            string weights = "";
+
+            for (int rowIndex = 0; rowIndex < ship!.ContainerStackRows.Count(); rowIndex++)
             {
-                if (determineNewLine == ship.WidthInContainers)
+                for (int stackIndex = 0; stackIndex < ship!.ContainerStackRows[rowIndex].ContainerStacks.Count(); stackIndex++)
                 {
-                    txt_ShipLayout.Text += Environment.NewLine;
-                    determineNewLine = 0;
+                    for (int containerIndex = 0; containerIndex < ship!.ContainerStackRows[rowIndex].ContainerStacks[stackIndex].Containers.Count(); containerIndex++)
+                    {
+                        if (ship!.ContainerStackRows[rowIndex].ContainerStacks[stackIndex].Containers[containerIndex].HasCooling &&
+                            !ship!.ContainerStackRows[rowIndex].ContainerStacks[stackIndex].Containers[containerIndex].HasValuables)
+                        {
+                            stacks += "3";
+                        }
+                        else if (ship!.ContainerStackRows[rowIndex].ContainerStacks[stackIndex].Containers[containerIndex].HasCooling &&
+                            ship!.ContainerStackRows[rowIndex].ContainerStacks[stackIndex].Containers[containerIndex].HasValuables)
+                        {
+                            stacks += "4";
+                        }
+                        else if (!ship!.ContainerStackRows[rowIndex].ContainerStacks[stackIndex].Containers[containerIndex].HasCooling &&
+                            ship!.ContainerStackRows[rowIndex].ContainerStacks[stackIndex].Containers[containerIndex].HasValuables)
+                        {
+                            stacks += "2";
+                        }
+                        else
+                        {
+                            stacks += "1";
+                        }
+
+                        weights += $"{ship!.ContainerStackRows[rowIndex].ContainerStacks[stackIndex].Containers[containerIndex].Weight}";
+                    }
+
+                    if (stackIndex < ship!.ContainerStackRows[rowIndex].ContainerStacks.Count())
+                    {
+                        stacks += ",";
+                    }
                 }
 
-                txt_ShipLayout.Text += "[ ]";
-                determineNewLine++;
+                if (rowIndex < ship!.ContainerStackRows.Count())
+                {
+                    stacks += "/";
+                }
             }
 
-            txt_ShipLayout.Text += Environment.NewLine + "_____";
+            return $"https://i872272.luna.fhict.nl/ContainerVisualizer/index.html?length={ship!.LengthInContainers}&width={ship!.WidthInContainers}&stacks={stacks}&weights={weights}";
         }
 
         private void FillContainerWeightComboBox()
         {
-            for (int weight = Classes.Container._MINWEIGHTINTON; weight <= Classes.Container._MAXWEIGHTINTON; weight++)
+            for (int weight = Models.Container._MINWEIGHTINTON; weight <= Models.Container._MAXWEIGHTINTON; weight++)
             {
                 cb_ContainerWeight.Items.Add(weight);
             }

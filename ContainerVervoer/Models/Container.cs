@@ -1,4 +1,4 @@
-﻿namespace ContainerVervoer.Classes
+﻿namespace ContainerVervoer.Models
 {
     public class Container
     {

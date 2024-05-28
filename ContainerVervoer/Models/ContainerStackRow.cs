@@ -1,10 +1,11 @@
-﻿using ContainerVervoer.Classes;
-
-namespace ContainerVervoer.Models
+﻿namespace ContainerVervoer.Models
 {
     public class ContainerStackRow
     {
         public int StackRowWeight { get { return containerStacks.Sum(s => s.StackWeight); } }
+        public int StackRowWeightLeftSide { get { return CalculateStackRowWeightLeftSide(); } }
+        public int StackRowWeightRightSide { get { return CalculateStackRowWeightRightSide(); } }
+        public double dividedWidth { get { return Math.Round(Convert.ToDouble(containerStacks.Count()) / 2, MidpointRounding.ToZero); } }
         public IReadOnlyList<ContainerStack> ContainerStacks { get { return containerStacks; } }
         private List<ContainerStack> containerStacks { get; set; } = new();
 
@@ -16,7 +17,7 @@ namespace ContainerVervoer.Models
             }
         }
 
-        public void TryToAddContainerToContainerStackRow(Container container)
+        public bool TryToAddContainerToContainerStackRow(Container container)
         {
             bool containerAdded = false;
 
@@ -24,6 +25,37 @@ namespace ContainerVervoer.Models
             {
                 if (!containerAdded) containerAdded = stack.TryAddingContainerToStack(container); else continue;
             }
+
+            return containerAdded ? true : throw new ArgumentException("Container could not be added to the stackrow!");
+        }
+
+        public bool TryToAddValuableContainerToContainerStackRow(Container container, ContainerStackRow? frontRow, ContainerStackRow? backRow)
+        {
+            bool containerAdded = false;
+
+            for (int i = 0; i < containerStacks.Count; i++) 
+            {
+                if (!containerAdded)
+                {
+                    if (containerStacks[i].Containers.Count() + 1 > frontRow?.containerStacks[i].Containers.Count ||
+                        containerStacks[i].Containers.Count() + 1 > backRow?.containerStacks[i].Containers.Count)
+                    {
+                        containerAdded = containerStacks[i].TryAddingContainerToStack(container);
+                    }
+                }
+            }
+
+            return containerAdded;
+        }
+
+        private int CalculateStackRowWeightLeftSide()
+        {
+            return containerStacks.Take(Convert.ToInt32(dividedWidth)).ToList().Sum(s => s.StackWeight);
+        }
+
+        private int CalculateStackRowWeightRightSide()
+        {
+            return containerStacks.TakeLast(Convert.ToInt32(dividedWidth)).ToList().Sum(s => s.StackWeight);
         }
     }
 }

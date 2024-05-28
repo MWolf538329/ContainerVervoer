@@ -1,4 +1,4 @@
-using ContainerVervoer.Classes;
+using ContainerVervoer.Models;
 
 namespace ContainerVervoerTests
 {

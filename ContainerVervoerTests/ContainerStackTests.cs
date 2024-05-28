@@ -1,30 +1,27 @@
-﻿using ContainerVervoer.Classes;
+﻿using ContainerVervoer.Models;
 
 namespace ContainerVervoerTests
 {
     [TestClass]
     public class ContainerStackTests
     {
-        private Container lightContainer { get; } = new Container(5, false, false);
         private Container defaultContainer { get; } = new Container(30, false, false);
         private Container normalContainer { get; } = new Container(25, false, false);
-        private Container valuableContainer { get; } = new Container(20, true, false);
+        private Container lightNormalContainer { get; } = new Container(5, false, false);
         private Container cooledContainer { get; } = new Container(30, false, true);
         private Container cooledValuableContainer { get; } = new Container(22, true, true);
+        private Container valuableContainer { get; } = new Container(20, true, false);
 
         [TestMethod]
-        public void DetermineStackWeight()
+        public void CheckStackWeight()
         {
             // Arrange
             ContainerStack stack = new ContainerStack();
             stack.TryAddingContainerToStack(defaultContainer);
-            stack.TryAddingContainerToStack(lightContainer);
-
-            // Act
-            int stackWeight = ContainerStack.DetermineStackWeight(stack.Containers.ToList());
+            stack.TryAddingContainerToStack(lightNormalContainer);
 
             // Assert
-            Assert.AreEqual(35, stackWeight);
+            Assert.AreEqual(35, stack.StackWeight);
         }
 
         [TestMethod]
@@ -64,38 +61,38 @@ namespace ContainerVervoerTests
         }
 
         [TestMethod]
-        public void TryAddingContainerToStack_ExceedCarryWeight()
-        {
-            // Arrange
-            ContainerStack stack = new();
-            stack.TryAddingContainerToStack(lightContainer);
-            stack.TryAddingContainerToStack(defaultContainer);
-            stack.TryAddingContainerToStack(defaultContainer);
-            stack.TryAddingContainerToStack(defaultContainer);
-            stack.TryAddingContainerToStack(defaultContainer);
-
-            // Act
-            bool succes = stack.TryAddingContainerToStack(lightContainer);
-
-            // Assert
-            Assert.AreEqual(false, succes);
-            Assert.AreEqual(5, stack.Containers.Count());
-        }
-
-        [TestMethod]
         public void TryAddingContainerToStack_DoesNotExceedCarryWeight()
         {
             // Arrange
             ContainerStack stack = new();
-            stack.TryAddingContainerToStack(lightContainer);
+            stack.TryAddingContainerToStack(lightNormalContainer);
             stack.TryAddingContainerToStack(defaultContainer);
 
             // Act
-            bool succes = stack.TryAddingContainerToStack(lightContainer);
+            bool succes = stack.TryAddingContainerToStack(lightNormalContainer);
 
             // Assert
             Assert.AreEqual(true, succes);
             Assert.AreEqual(3, stack.Containers.Count());
+        }
+
+        [TestMethod]
+        public void TryAddingContainerToStack_ExceedCarryWeight()
+        {
+            // Arrange
+            ContainerStack stack = new();
+            stack.TryAddingContainerToStack(lightNormalContainer);
+            stack.TryAddingContainerToStack(defaultContainer);
+            stack.TryAddingContainerToStack(defaultContainer);
+            stack.TryAddingContainerToStack(defaultContainer);
+            stack.TryAddingContainerToStack(defaultContainer);
+
+            // Act
+            bool succes = stack.TryAddingContainerToStack(lightNormalContainer);
+
+            // Assert
+            Assert.AreEqual(false, succes);
+            Assert.AreEqual(5, stack.Containers.Count());
         }
 
         #region TryAddingContainerToStack_DifferentCombinations
