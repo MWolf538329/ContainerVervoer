@@ -160,18 +160,15 @@ namespace ContainerVervoer
                 {
                     for (int containerIndex = 0; containerIndex < ship!.ContainerStackRows[rowIndex].ContainerStacks[stackIndex].Containers.Count(); containerIndex++)
                     {
-                        if (ship!.ContainerStackRows[rowIndex].ContainerStacks[stackIndex].Containers[containerIndex].HasCooling &&
-                            !ship!.ContainerStackRows[rowIndex].ContainerStacks[stackIndex].Containers[containerIndex].HasValuables)
+                        if (IsContainerCooled(ship!.ContainerStackRows[rowIndex].ContainerStacks[stackIndex].Containers[containerIndex]))
                         {
                             stacks += "3";
                         }
-                        else if (ship!.ContainerStackRows[rowIndex].ContainerStacks[stackIndex].Containers[containerIndex].HasCooling &&
-                            ship!.ContainerStackRows[rowIndex].ContainerStacks[stackIndex].Containers[containerIndex].HasValuables)
+                        else if (IsContainerCooledValuable(ship!.ContainerStackRows[rowIndex].ContainerStacks[stackIndex].Containers[containerIndex]))
                         {
                             stacks += "4";
                         }
-                        else if (!ship!.ContainerStackRows[rowIndex].ContainerStacks[stackIndex].Containers[containerIndex].HasCooling &&
-                            ship!.ContainerStackRows[rowIndex].ContainerStacks[stackIndex].Containers[containerIndex].HasValuables)
+                        else if (IsContainerValuable(ship!.ContainerStackRows[rowIndex].ContainerStacks[stackIndex].Containers[containerIndex]))
                         {
                             stacks += "2";
                         }
@@ -197,6 +194,21 @@ namespace ContainerVervoer
 
             return $"https://i872272.luna.fhict.nl/ContainerVisualizer/index.html?length={ship!.LengthInContainers}&width={ship!.WidthInContainers}&stacks={stacks}&weights={weights}";
         }
+
+        #region Container Types
+        private bool IsContainerCooled(Container container)
+        {
+            return container.HasCooling && !container.HasValuables;
+        }
+        private bool IsContainerCooledValuable(Container container)
+        {
+            return container.HasCooling && container.HasValuables;
+        }
+        private bool IsContainerValuable(Container container)
+        {
+            return !container.HasCooling && container.HasValuables;
+        }
+        #endregion
 
         private void FillContainerWeightComboBox()
         {

@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Eventing.Reader;
-
-namespace ContainerVervoer.Models
+﻿namespace ContainerVervoer.Models
 {
     public class ContainerShip
     {
@@ -59,14 +57,22 @@ namespace ContainerVervoer.Models
 
         private void TryToPlaceNormalContainers()
         {
+            int rowIndex = 1;
+            int amountAdded = 0;
+
             List<Container> normalContainers = containersOnBay.Where(c => !c.HasCooling).Where(c => !c.HasValuables).ToList();
 
             foreach (Container normalContainer in normalContainers)
             {
-                for (int i = 0; i < containerStackRows.Count(); i++)
-                {
+                bool containerAdded = false;
 
-                }
+                if (rowIndex == LengthInContainers) rowIndex = 0;
+
+                containerAdded = containerStackRows[rowIndex].TryToAddContainerToContainerStackRow(normalContainer);
+
+                if (containerAdded) amountAdded++; else rowIndex++;
+
+                if (amountAdded == WidthInContainers) amountAdded = 0;
             }
         }
 
@@ -82,8 +88,8 @@ namespace ContainerVervoer.Models
                 {
                     if (!containerAdded)
                     {
-                        containerStackRows[i].TryToAddValuableContainerToContainerStackRow(
-                        valuableContainer, containerStackRows[i - WidthInContainers], containerStackRows[i + WidthInContainers]);
+                        //containerStackRows[i].TryToAddValuableContainerToContainerStackRow(
+                        //valuableContainer, containerStackRows[i - WidthInContainers], containerStackRows[i + WidthInContainers]);
                     }
                 }
             }
@@ -124,16 +130,12 @@ namespace ContainerVervoer.Models
 
         public int CalculateWeightLeftSide()
         {
-            int totalweight = 0;
-
-            return totalweight += containerStackRows.Sum(row => row.ContainerStacks.FirstOrDefault()!.StackWeight);
+            return containerStackRows.Sum(row => row.StackRowWeightLeftSide);
         }
 
         public int CalculateWeightRightSide()
         {
-            int totalweight = 0;
-
-            return totalweight += containerStackRows.Sum(row => row.ContainerStacks.LastOrDefault()!.StackWeight);
+            return containerStackRows.Sum(row => row.StackRowWeightRightSide);
         }
 
         public bool CalculateMarginOfSides(int weightLeftSide, int weightRightSide)

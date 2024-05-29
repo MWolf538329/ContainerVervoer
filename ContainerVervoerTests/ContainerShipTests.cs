@@ -250,12 +250,17 @@ namespace ContainerVervoerTests
             // Arrange
             ContainerShip ship = new(2, 2);
             ship.AddContainerToBay(30, false, true);
-            ship.AddContainerToBay(25, false, true);
+            ship.AddContainerToBay(25, false, true); //
             ship.AddContainerToBay(20, false, true);
-            ship.AddContainerToBay(24, true, true);
+            ship.AddContainerToBay(24, true, true); //
             ship.AddContainerToBay(30, false, false);
+            ship.AddContainerToBay(30, false, false); //
+            ship.AddContainerToBay(30, false, false);
+            ship.AddContainerToBay(30, false, false); //
+            ship.AddContainerToBay(30, false, false);
+            ship.AddContainerToBay(30, false, false); //
             ship.AddContainerToBay(25, false, false);
-            ship.AddContainerToBay(15, false, false);
+            ship.AddContainerToBay(15, false, false); //
             ship.AddContainerToBay(10, true, false);
             ship.DivideContainersOverShip();
 
@@ -263,7 +268,7 @@ namespace ContainerVervoerTests
             int actual = ship.CalculateWeightRightSide();
 
             // Assert
-            Assert.AreEqual(74, actual);
+            Assert.AreEqual(70, actual);
         }
 
         [TestMethod]
