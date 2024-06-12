@@ -4,6 +4,8 @@
     {
         public const int _MAXSTACKWEIGHTINTON = 150;
 
+        private const int _MAXSTACKWEIGHTWITHOUTVALUABLE = 120;
+
         public int StackWeight { get { return containers.Sum(e => e.Weight); } }
         public IReadOnlyList<Container> Containers { get { return containers; } }
         private List<Container> containers { get; set; }
@@ -17,6 +19,11 @@
         {
             if (containers.Count != 0)
             {
+                if (!container.HasValuables && StackWeight + container.Weight > _MAXSTACKWEIGHTWITHOUTVALUABLE)
+                {
+                    return false;
+                }
+
                 if (DoesNotExceedStackWeightLimit(container) && DoesNotExceedCarryWeightLimit(container))
                 {
                     if (!NotOnTopOfValuableContainer(container))

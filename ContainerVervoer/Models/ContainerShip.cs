@@ -57,40 +57,30 @@
 
         private void TryToPlaceNormalContainers()
         {
-            int rowIndex = 1;
-            int amountAdded = 0;
-
             List<Container> normalContainers = containersOnBay.Where(c => !c.HasCooling).Where(c => !c.HasValuables).ToList();
 
             foreach (Container normalContainer in normalContainers)
             {
                 bool containerAdded = false;
 
-                if (rowIndex == LengthInContainers) rowIndex = 0;
-
-                containerAdded = containerStackRows[rowIndex].TryToAddContainerToContainerStackRow(normalContainer);
-
-                if (containerAdded) amountAdded++; else rowIndex++;
-
-                if (amountAdded == WidthInContainers) amountAdded = 0;
+                foreach (ContainerStackRow row in containerStackRows)
+                {
+                    if (!containerAdded) containerAdded = row.TryToAddContainerToContainerStackRow(normalContainer);
+                }
             }
         }
 
         private void TryToPlaceValuableContainers()
         {
-            List<Container> valuableContaniers = containersOnBay.Where(c => !c.HasCooling).Where(c => c.HasValuables).ToList();
+            List<Container> valuableContainers = containersOnBay.Where(c => !c.HasCooling).Where(c => c.HasValuables).ToList();
 
-            foreach (Container valuableContainer in valuableContaniers)
+            foreach (Container valuableContainer in valuableContainers)
             {
                 bool containerAdded = false;
 
-                for (int i = 0; i < containerStackRows.Count(); i++)
+                foreach (ContainerStackRow row in containerStackRows)
                 {
-                    if (!containerAdded)
-                    {
-                        //containerStackRows[i].TryToAddValuableContainerToContainerStackRow(
-                        //valuableContainer, containerStackRows[i - WidthInContainers], containerStackRows[i + WidthInContainers]);
-                    }
+                    if (!containerAdded) containerAdded = row.TryToAddContainerToContainerStackRow(valuableContainer);
                 }
             }
         }
@@ -110,7 +100,7 @@
 
         public bool WillHalfOfShipWeightBeUsed()
         {
-            return containersOnBay.Sum(c => c.Weight) >= MaxShipWeight / 2 ? true : throw new ArgumentException("Totalweight is lower than shipweight!");
+            return containersOnBay.Sum(c => c.Weight) >= MaxShipWeight / 2 ? true : throw new ArgumentException("Totalweight is lower than half of shipweight!");
         }
 
         public bool ContainersOnBayWeightDoNotExceedMaxShipWeight()

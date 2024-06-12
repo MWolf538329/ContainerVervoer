@@ -25,28 +25,10 @@ namespace ContainerVervoerTests
         }
 
         [TestMethod]
-        public void TryAddingContainerToStack_DoesNotExceedStackWeight()
+        public void TryAddingContainerToStack_NormalContainerExceedsMaxWeightWithoutValuable()
         {
             // Arrange
             ContainerStack stack = new();
-            stack.TryAddingContainerToStack(defaultContainer);
-            stack.TryAddingContainerToStack(defaultContainer);
-            stack.TryAddingContainerToStack(new Container(20, false, false));
-
-            // Act
-            bool succes = stack.TryAddingContainerToStack(normalContainer);
-
-            // Assert
-            Assert.AreEqual(true, succes);
-            Assert.AreEqual(4, stack.Containers.Count());
-        }
-
-        [TestMethod]
-        public void TryAddingContainerToStack_ExceedStackWeight()
-        {
-            // Arrange
-            ContainerStack stack = new();
-            stack.TryAddingContainerToStack(defaultContainer);
             stack.TryAddingContainerToStack(defaultContainer);
             stack.TryAddingContainerToStack(defaultContainer);
             stack.TryAddingContainerToStack(defaultContainer);
@@ -57,6 +39,24 @@ namespace ContainerVervoerTests
 
             // Assert
             Assert.AreEqual(false, succes);
+            Assert.AreEqual(4, stack.Containers.Count());
+        }
+
+        [TestMethod]
+        public void TryAddingContainerToStack_DoesNotExceedStackWeight()
+        {
+            // Arrange
+            ContainerStack stack = new();
+            stack.TryAddingContainerToStack(defaultContainer);
+            stack.TryAddingContainerToStack(defaultContainer);
+            stack.TryAddingContainerToStack(defaultContainer);
+            stack.TryAddingContainerToStack(new Container(20, false, false));
+
+            // Act
+            bool succes = stack.TryAddingContainerToStack(valuableContainer);
+
+            // Assert
+            Assert.AreEqual(true, succes);
             Assert.AreEqual(5, stack.Containers.Count());
         }
 
@@ -85,14 +85,13 @@ namespace ContainerVervoerTests
             stack.TryAddingContainerToStack(defaultContainer);
             stack.TryAddingContainerToStack(defaultContainer);
             stack.TryAddingContainerToStack(defaultContainer);
-            stack.TryAddingContainerToStack(defaultContainer);
 
             // Act
-            bool succes = stack.TryAddingContainerToStack(lightNormalContainer);
+            bool succes = stack.TryAddingContainerToStack(defaultContainer);
 
             // Assert
             Assert.AreEqual(false, succes);
-            Assert.AreEqual(5, stack.Containers.Count());
+            Assert.AreEqual(4, stack.Containers.Count());
         }
 
         #region TryAddingContainerToStack_DifferentCombinations

@@ -21,19 +21,22 @@
         {
             bool containerAdded = false;
 
+            containerStacks = containerStacks.OrderBy(c => c.StackWeight).ToList();
+
             foreach (ContainerStack stack in containerStacks)
             {
                 if (!containerAdded) containerAdded = stack.TryAddingContainerToStack(container); else continue;
             }
 
-            return containerAdded ? true : throw new ArgumentException("Container could not be added to the stackrow!");
+            return containerAdded;
+            //return containerAdded ? true : throw new ArgumentException("Container could not be added to the stackrow!");
         }
 
         public bool TryToAddValuableContainerToContainerStackRow(Container container, ContainerStackRow? frontRow, ContainerStackRow? backRow)
         {
             bool containerAdded = false;
 
-            for (int i = 0; i < containerStacks.Count; i++) 
+            for (int i = 0; i < containerStacks.Count; i++)
             {
                 if (!containerAdded)
                 {

@@ -1,4 +1,5 @@
 using ContainerVervoer.Models;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 namespace ContainerVervoer
@@ -58,7 +59,7 @@ namespace ContainerVervoer
                 {
                     ship!.DivideContainersOverShip();
 
-                    txt_Output.Text = CreateThreeDVisualizationURL();
+                    txt_Output.Text = DebugShip();
                 }
                 else
                 {
@@ -192,7 +193,24 @@ namespace ContainerVervoer
                 }
             }
 
-            return $"https://i872272.luna.fhict.nl/ContainerVisualizer/index.html?length={ship!.LengthInContainers}&width={ship!.WidthInContainers}&stacks={stacks}&weights={weights}";
+            return $"https://i872272.luna.fhict.nl/ContainerVisualizer/index.html?width={ship!.LengthInContainers}&length={ship!.WidthInContainers}&stacks={stacks}&weights={weights}";
+        }
+
+        private string DebugShip()
+        {
+            return $"https://i872272.luna.fhict.nl/ContainerVisualizer/index.html?width={ship!.LengthInContainers}&length={ship!.WidthInContainers}&stacks={string.Join("/", ship.ContainerStackRows.Select(
+                        r => string.Join(",", r.ContainerStacks.Select(
+                            s => string.Join("-", s.Containers.Select(
+                                c => 1 + (c.HasValuables ? 1 : 0) + 2 * (c.HasCooling ? 1 : 0)
+                            ))
+                        ))
+                    ))}&weights={string.Join("/", ship.ContainerStackRows.Select(
+                        r => string.Join(",", r.ContainerStacks.Select(
+                            s => string.Join("-", s.Containers.Select(
+                                c => c.Weight
+                            ))
+                        ))
+                    ))}";
         }
 
         #region Container Types
