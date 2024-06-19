@@ -29,7 +29,6 @@
             }
 
             return containerAdded;
-            //return containerAdded ? true : throw new ArgumentException("Container could not be added to the stackrow!");
         }
 
         public bool TryToAddValuableContainerToContainerStackRow(Container container, ContainerStackRow? frontRow, ContainerStackRow? backRow)
